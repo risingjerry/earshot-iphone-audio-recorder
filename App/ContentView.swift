@@ -6,9 +6,10 @@ struct ContentView: View {
     @State private var pickingFolder = false
     @State private var exportFolder = Export.folderDisplayName
     @State private var standby = Standby.enabled
+    @State private var path: [String] = []
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $path) {
             List {
                 Section {
                     RecordControls(broadcast: library.liveBroadcast)
@@ -22,7 +23,7 @@ struct ContentView: View {
                     Button { pickingFolder = true } label: {
                         LabeledContent("存到 iCloud", value: exportFolder ?? "未选择")
                     }
-                    NavigationLink("设置 Action Button") { ActionButtonHelp() }
+                    NavigationLink("设置 Action Button", value: "help")
                     Toggle("待命模式", isOn: Binding(get: { standby }, set: { standby = $0; Standby.enabled = $0 }))
                     if standby {
                         TimelineView(.periodic(from: .now, by: 2)) { _ in
@@ -56,7 +57,16 @@ struct ContentView: View {
             }
             .navigationTitle("Earshot")
             .navigationDestination(for: String.self) { id in
-                if let item = library.items.first(where: { $0.id == id }) { DetailView(item: item) }
+                if id == "help" {
+                    ActionButtonHelp()
+                } else if let item = library.items.first(where: { $0.id == id }) {
+                    DetailView(item: item)
+                }
+            }
+            .onAppear {                                   // screenshots only: open a screen directly
+                let args = ProcessInfo.processInfo.arguments
+                if args.contains("-EarshotDemoDetail"), let first = library.items.first { path = [first.id] }
+                if args.contains("-EarshotDemoHelp") { path = ["help"] }
             }
             .refreshable { library.reload() }
             .fileImporter(isPresented: $pickingFolder, allowedContentTypes: [.folder]) { result in

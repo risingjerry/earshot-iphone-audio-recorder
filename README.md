@@ -12,7 +12,7 @@ from iCloud, transcribes them with the tool you choose, and writes a summary tha
 ![iOS 26+](https://img.shields.io/badge/iOS-26%2B-black)
 ![macOS](https://img.shields.io/badge/Mac%20sync-macOS-lightgrey)
 
-<p align="center"><img src="docs/screenshot.png" width="320" alt="Earshot on iPhone: a 'conversation' and a 'phone sound' button, standby switch, and a list of recordings with summaries (sample data)"></p>
+<p align="center"><img src="docs/demo.gif" width="300" alt="Earshot on iPhone (sample data): the recordings list, a meeting summary with agreements and to-dos, and the Action Button guide"></p>
 
 It is like Audio Hijack for the iPhone, built on Apple's public screen-recording (ReplayKit) extension.
 

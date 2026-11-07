@@ -11,7 +11,7 @@ Earshot 是一个**只录声音的 iPhone 录音工具**：按一下 Action Butt
 ![iOS 26+](https://img.shields.io/badge/iOS-26%2B-black)
 ![macOS](https://img.shields.io/badge/Mac%20同步-macOS-lightgrey)
 
-<p align="center"><img src="docs/screenshot.png" width="320" alt="Earshot iPhone 界面：现场对话、手机声音两个按钮，待命模式开关，带纪要的录音列表（示例数据）"></p>
+<p align="center"><img src="docs/demo.gif" width="300" alt="Earshot iPhone 界面（示例数据）：录音列表、带约定和待办的会议纪要、Action Button 说明"></p>
 
 可以理解成 iPhone 上的 Audio Hijack，用的是苹果公开的录屏（ReplayKit）扩展接口。
 

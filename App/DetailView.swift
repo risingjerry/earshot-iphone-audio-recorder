@@ -14,7 +14,7 @@ struct DetailView: View {
             Section {
                 VStack(alignment: .leading, spacing: 6) {
                     Text(item.title).font(.title3.weight(.semibold))
-                    Text("\(Format.date(item.info.startedAt)) · \(Format.duration(item.info.duration)) · \(Format.size(item.bytes))")
+                    Text([Format.date(item.info.startedAt), Format.duration(item.info.duration), item.bytes > 0 ? Format.size(item.bytes) : nil].compactMap { $0 }.joined(separator: " · "))
                         .font(.subheadline).foregroundStyle(.secondary)
                     Text(Format.sources(item.info)).font(.subheadline).foregroundStyle(.secondary)
                 }
