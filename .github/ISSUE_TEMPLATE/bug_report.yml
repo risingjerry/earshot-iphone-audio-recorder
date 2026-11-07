@@ -1,0 +1,26 @@
+name: Bug report
+description: Something in Earshot (iPhone app or Mac sync) does not work
+labels: [bug]
+body:
+  - type: input
+    attributes:
+      label: Earshot version, iOS version, macOS version
+      placeholder: "0.3.0; iOS 27.0.1; macOS 26.6"
+    validations:
+      required: true
+  - type: dropdown
+    attributes:
+      label: Where
+      options: [iPhone app, Screen-recorder extension, Action Button / standby, Mac sync, Transcription / summary]
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: What happened and what you expected
+      description: Steps to reproduce. Never attach real recordings or transcripts.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: "`python3 mac/earshot.py status` and the last lines of ~/Library/Logs/earshot-sync.log (remove anything private)"
+      render: text

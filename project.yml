@@ -1,0 +1,93 @@
+name: Earshot
+options:
+  bundleIdPrefix: ${EARSHOT_BUNDLE_PREFIX}
+  deploymentTarget:
+    iOS: "26.0"
+  createIntermediateGroups: true
+settings:
+  base:
+    # Filled from the environment when running `xcodegen generate` (see config.example.env / Makefile).
+    DEVELOPMENT_TEAM: ${EARSHOT_TEAM_ID}
+    EARSHOT_APP_GROUP: group.${EARSHOT_BUNDLE_PREFIX}.earshot
+    CODE_SIGN_STYLE: Automatic
+    SWIFT_VERSION: "5.10"
+    MARKETING_VERSION: "0.3.0"
+    CURRENT_PROJECT_VERSION: "3"
+targets:
+  Earshot:
+    type: application
+    platform: iOS
+    sources:
+      - path: App
+      - path: Shared
+      - path: Activity
+    dependencies:
+      - target: EarshotBroadcast
+      - target: EarshotWidgets
+    info:
+      path: App/Info.plist
+      properties:
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        UIBackgroundModes: [audio]
+        EarshotAppGroup: $(EARSHOT_APP_GROUP)
+        EarshotBroadcastExtension: $(PRODUCT_BUNDLE_IDENTIFIER).broadcast
+    entitlements:
+      path: App/Earshot.entitlements
+      properties:
+        com.apple.security.application-groups: [$(EARSHOT_APP_GROUP)]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: ${EARSHOT_BUNDLE_PREFIX}.earshot
+        TARGETED_DEVICE_FAMILY: "1"
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_CFBundleDisplayName: Earshot
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_UISupportedInterfaceOrientations: UIInterfaceOrientationPortrait
+        INFOPLIST_KEY_NSMicrophoneUsageDescription: 录现场对话
+        INFOPLIST_KEY_NSSupportsLiveActivities: YES
+  EarshotWidgets:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: Widget
+      - path: Activity
+    info:
+      path: Widget/Info.plist
+      properties:
+        CFBundleDisplayName: Earshot
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: ${EARSHOT_BUNDLE_PREFIX}.earshot.widgets
+        TARGETED_DEVICE_FAMILY: "1"
+        APPLICATION_EXTENSION_API_ONLY: YES
+  EarshotBroadcast:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: Broadcast
+      - path: Shared
+    entitlements:
+      path: Broadcast/EarshotBroadcast.entitlements
+      properties:
+        com.apple.security.application-groups: [$(EARSHOT_APP_GROUP)]
+    info:
+      path: Broadcast/Info.plist
+      properties:
+        CFBundleDisplayName: Earshot
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        EarshotAppGroup: $(EARSHOT_APP_GROUP)
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.broadcast-services-upload
+          NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).SampleHandler
+          RPBroadcastProcessMode: RPBroadcastProcessModeSampleBuffer
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: ${EARSHOT_BUNDLE_PREFIX}.earshot.broadcast
+        TARGETED_DEVICE_FAMILY: "1"
+        APPLICATION_EXTENSION_API_ONLY: YES

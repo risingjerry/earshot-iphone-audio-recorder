@@ -1,0 +1,10 @@
+build/
+*.xcodeproj/
+App/*.entitlements
+Broadcast/*.entitlements
+Broadcast/Info.plist
+__pycache__/
+.DS_Store
+Widget/Info.plist
+App/Info.plist
+config.local.env
