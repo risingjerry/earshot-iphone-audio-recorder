@@ -16,6 +16,7 @@ Read `docs/CONTRACT.md` before changing anything the phone and the Mac exchange.
 | `Widget/`, `Activity/` | Live Activity (Lock Screen + Dynamic Island) with a stop button |
 | `Shared/` | Shared by app and extension: recording metadata, iCloud export, standby state |
 | `mac/earshot.py` | Mac sync CLI: iCloud folder first, then `xcrun devicectl`; ffmpeg mix → transcribe → summary |
+| `macos/` | Mac menu bar app (our build of [Cicada](https://github.com/wquguru/cicada) at `macos/UPSTREAM`, Apache-2.0, never updated from upstream): records only chosen apps plus your mic (Audio Hijack's job), live subtitles and notes; each finished recording is exported to `icloud_dir` for `mac/earshot.py`. See `macos/README.md` |
 | `examples/transcribe-whisper.sh` | Local transcriber example (whisper.cpp) for `transcribe_cmd` |
 
 ## Setup
@@ -35,6 +36,14 @@ python3 mac/earshot.py init-config        # writes ~/.config/earshot/config.json
 python3 mac/earshot.py config             # effective settings
 python3 mac/earshot.py sync               # process finished recordings once
 make mac-install                          # launchd job dev.earshot.sync: every 10 min + on iCloud changes
+```
+
+Mac app (Command Line Tools are enough):
+
+```sh
+make mac-app            # macos/build/Earshot.app (release, bundle id dev.earshot.mac)
+make mac-app-install    # copy to /Applications and open; first launch asks for System Audio Recording
+make mac-app-test       # unit tests (no audio, no network)
 ```
 
 ## Commands and output

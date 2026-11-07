@@ -11,8 +11,8 @@ settings:
     EARSHOT_APP_GROUP: group.${EARSHOT_BUNDLE_PREFIX}.earshot
     CODE_SIGN_STYLE: Automatic
     SWIFT_VERSION: "5.10"
-    MARKETING_VERSION: "0.3.0"
-    CURRENT_PROJECT_VERSION: "3"
+    MARKETING_VERSION: "0.4.0"
+    CURRENT_PROJECT_VERSION: "4"
 targets:
   Earshot:
     type: application

@@ -60,6 +60,19 @@ flowchart LR
 
 iPhone App 里没有任何联网代码。手机写什么、Mac 写回什么，都写在 [`docs/CONTRACT.md`](docs/CONTRACT.md)。
 
+## Mac App：电脑上的通话和会议也能录
+
+`macos/` 是一个菜单栏 App，在 Mac 上做 Audio Hijack 录通话的那些事：只录你选的 App（默认腾讯会议、微信、飞书、
+抖音、QuickTime），通话一开始或选中的 App 一出声就自动开录，通话期间把你的麦克风也录进去（在腾讯会议里静音时
+那一段自动变成静音），录完交给和 iPhone 同一套 `mac/earshot.py` 转写、写纪要。它基于
+[Cicada（知了）](https://github.com/wquguru/cicada)（Apache-2.0）改的，所以也自带实时字幕和纪要。界面中文，需要 macOS 14.4+。
+
+```sh
+make mac-app-install    # 编译、复制到「应用程序」并打开；第一次会请求「系统音频录制」权限
+```
+
+给 Agent 和贡献者看的细节：[`macos/README.md`](macos/README.md)。
+
 ## 配置 Mac 端
 
 需要 Python 3.11+、ffmpeg 和一个转写命令。纪要默认用 [Codex CLI](https://github.com/openai/codex) 写，
@@ -142,11 +155,13 @@ launchctl bootout gui/$(id -u)/dev.earshot.resign; rm -f ~/Library/LaunchAgents/
 rm -rf ~/.config/earshot "~/Library/Application Support/earshot"
 ```
 
+Mac App：退出后删掉 `/Applications/Earshot.app` 和 `~/Library/Application Support/Earshot Mac`。
+
 iCloud 文件夹里的录音不会被删，需要的话自己删。
 
 ## 贡献、安全、许可证
 
-[贡献指南](CONTRIBUTING.md) · [安全策略](SECURITY.md) · [MIT 许可证](LICENSE)
+[贡献指南](CONTRIBUTING.md) · [安全策略](SECURITY.md) · [MIT 许可证](LICENSE) · `macos/` 里的 Mac App 基于 Cicada，[Apache-2.0](macos/LICENSE-cicada)
 
 如果 Earshot 帮你省下了一次会议记录，点个 ⭐ 能让更多人找到它。
 

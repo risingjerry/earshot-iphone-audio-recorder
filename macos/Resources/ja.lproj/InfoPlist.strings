@@ -1,0 +1,6 @@
+CFBundleName = "Earshot";
+CFBundleDisplayName = "Earshot";
+NSAudioCaptureUsageDescription = "ライブ字幕を作るため、Earshot は Mac で再生中の音声を読み取ります。";
+NSMicrophoneUsageDescription = "話すキーを押している間、Earshot はマイクを使ってあなたの言葉を相手の言語に翻訳します。会議室を聞くときは、マイクでその場の人の声を聞きます。";
+NSSpeechRecognitionUsageDescription = "Earshot は音声をテキストにするために音声認識を使います。";
+NSLocalNetworkUsageDescription = "AI サービスに設定したローカルネットワーク上のサーバーに接続するためだけに使います。Earshot がほかのデバイスを探したり接続したりすることはありません。";

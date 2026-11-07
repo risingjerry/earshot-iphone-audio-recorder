@@ -65,6 +65,21 @@ flowchart LR
 The iPhone app has no network code. Everything it writes, and everything the Mac writes back, is described in
 [`docs/CONTRACT.md`](docs/CONTRACT.md).
 
+## Mac app: record calls and meetings on the Mac too
+
+`macos/` is a menu bar app that does on the Mac what Audio Hijack used to do for calls: it records only the
+apps you pick (Tencent Meeting, WeChat, Lark, Douyin, QuickTime by default), starts by itself when a call
+begins or a picked app plays, adds your microphone for the length of a call (silenced while you are muted in
+Tencent Meeting), and hands each finished recording to the same `mac/earshot.py` pipeline as the iPhone's.
+It is built on [Cicada](https://github.com/wquguru/cicada) (Apache-2.0), so live subtitles and notes come
+with it. Interface in Chinese; macOS 14.4+.
+
+```sh
+make mac-app-install    # build, copy to /Applications, open; allow System Audio Recording when asked
+```
+
+Details for agents and contributors: [`macos/README.md`](macos/README.md).
+
 ## Set up the Mac side
 
 Requirements: Python 3.11+, ffmpeg, and a transcription command. Summaries use the
@@ -153,11 +168,13 @@ launchctl bootout gui/$(id -u)/dev.earshot.resign; rm -f ~/Library/LaunchAgents/
 rm -rf ~/.config/earshot "~/Library/Application Support/earshot"
 ```
 
+For the Mac app: quit it, delete `/Applications/Earshot.app` and `~/Library/Application Support/Earshot Mac`.
+
 Your recordings stay in the iCloud folder until you delete them.
 
 ## Contributing, security, license
 
-[Contributing](CONTRIBUTING.md) · [Security policy](SECURITY.md) · [MIT License](LICENSE)
+[Contributing](CONTRIBUTING.md) · [Security policy](SECURITY.md) · [MIT License](LICENSE) · the Mac app in `macos/` is based on Cicada, [Apache-2.0](macos/LICENSE-cicada)
 
 If Earshot saved you a meeting's worth of notes, a ⭐ helps others find it.
 

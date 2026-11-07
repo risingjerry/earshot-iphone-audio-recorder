@@ -28,3 +28,15 @@ mac-install:
 
 mac-config:
 	python3 mac/earshot.py config
+
+# Mac app (macos/, our build of Cicada): build, install into /Applications, unit tests.
+.PHONY: mac-app mac-app-install mac-app-test
+mac-app:
+	cd macos && RELEASE=1 scripts/build.sh
+
+mac-app-install: mac-app
+	osascript -e 'quit app "Earshot"' 2>/dev/null || true
+	rm -rf /Applications/Earshot.app && cp -R macos/build/Earshot.app /Applications/ && open /Applications/Earshot.app
+
+mac-app-test:
+	cd macos && scripts/test.sh

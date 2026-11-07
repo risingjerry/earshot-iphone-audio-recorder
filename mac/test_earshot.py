@@ -380,7 +380,7 @@ class EarshotTests(unittest.TestCase):
                     e.declared_tracks(info)
 
     def test_scene_selects_summary_prompt(self):
-        for scene in ("conversation", "media", None):
+        for scene in ("conversation", "media", "mac", None):
             with self.subTest(scene=scene):
                 work = self.root / str(scene)
                 work.mkdir()
@@ -395,6 +395,9 @@ class EarshotTests(unittest.TestCase):
                 if scene == "conversation":
                     self.assertIn("现场对话", prompt)
                     self.assertNotIn("我可以怎么用", prompt)
+                elif scene == "mac":
+                    self.assertIn("电脑上录的声音", prompt)
+                    self.assertNotIn("手机里播放", prompt)
                 else:
                     for text in ("先判断", "线上会议或通话", "视频/直播/讲座", "数据、方法、例子",
                                  "我可以怎么用（只在内容有可执行建议时写）"):

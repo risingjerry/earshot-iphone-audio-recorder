@@ -38,6 +38,7 @@ Library/Recordings/<id>/transcript.md  Mac 写：带时间戳的文字稿
 ```
 
 - `scene`（v2 新增，缺省按 `media`）：`conversation` = 手机麦克风录现场对话（App 自己录，只有 mic 轨，文件是 `mic.caf`）；`media` = 系统录屏扩展录手机里正在播放的声音（视频、直播、线上会议、通话），可能带 mic 轨。
+- `scene` 还可以是 `mac`：Mac App（`macos/`）录的电脑声音，`app.m4a` 是选中的 App 放出来的声音，`mic.m4a` 是通话时的麦克风；两轨 `offset` 都是 0。Mac 把它写进 `icloud_dir`，文件夹名 `<YYYY-MM-DD HHMM> 电脑声音`（北京时间），和手机的一样由 `earshot.py` 处理。
 - 轨道文件名以 `tracks.*.file` 为准：`app.m4a`、`mic.m4a` 或 `mic.caf`（CAF 里是 AAC，被杀时也可读）。
 - `offset`：该轨第一个声音相对整段录音起点的秒数；两轨对齐时把 mic 延后 `offset` 秒（app 同理）。
 - `seconds`：该轨已写入的时长。`tracks` 里没有的轨就是没录到。
