@@ -20,7 +20,6 @@ final class AppMenu: NSObject, NSMenuItemValidation {
 
         let app = NSMenu(title: name)
         app.addItem(item(L("关于 \(name)"), #selector(about)))
-        app.addItem(item(L("检查更新…"), #selector(checkUpdates)))
         app.addItem(.separator())
         app.addItem(item(L("设置…"), #selector(openSettings), ","))
         app.addItem(item(L("AI 服务…"), #selector(openAI)))

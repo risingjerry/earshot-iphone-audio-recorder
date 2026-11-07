@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
-	<string>en</string>
+	<string>zh-Hans</string>
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
@@ -33,10 +33,6 @@
 	<key>CFBundleLocalizations</key>
 	<array>
 		<string>zh-Hans</string>
-		<string>zh-Hant</string>
-		<string>en</string>
-		<string>ja</string>
-		<string>ko</string>
 	</array>
 	<key>CFBundleName</key>
 	<string>Earshot</string>

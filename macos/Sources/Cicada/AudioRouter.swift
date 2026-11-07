@@ -101,9 +101,15 @@ final class AudioRouter: @unchecked Sendable {
         queue.async { [self] in process(mono) }
     }
 
+    /// Earshot: while muted in the meeting app, the microphone goes on as silence: nothing of it is
+    /// recorded or recognized, and the recording keeps its timeline (Audio Hijack's mic gate).
+    private var silenced = false
+    func setSilenced(_ on: Bool) { queue.async { [self] in silenced = on } }
+
     private func process(_ mono: AVAudioPCMBuffer) {
         let n = Int(mono.frameLength)
         guard n > 0, let data = mono.floatChannelData else { return }
+        if silenced { memset(data[0], 0, n * MemoryLayout<Float>.size) }
         var sum: Float = 0
         for i in 0..<n { sum += data[0][i] * data[0][i] }
         let rms = (sum / Float(n)).squareRoot()

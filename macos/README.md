@@ -12,6 +12,9 @@ What Earshot adds to Cicada:
 | After stopping by itself, start again on the next call or when a chosen non-call app plays | `AppModel.watchEnd` (`rearmed`) |
 | 微信 counts as a call when it reads the mic and plays at once (a voice message only reads it) | `MicUsers.currentCalls`, `AppCapture.inCall` |
 | Microphone on for the length of a call, recorded to `room.m4a` on the meeting's timeline | `AppModel.followCallMic`, `SessionStore.roomAudioURL` |
+| 腾讯会议 mute followed by watching clicks on its mic button (ported from the TencentAudioHijackSync helper); while muted the mic track is digital silence | `TencentMute.swift`, `AudioRouter.setSilenced` |
+| Chinese UI on every Mac: only `zh-Hans.lproj` ships | `scripts/build.sh` |
+| Open at login on by default (release build, once) | `AppModel.launch` |
 | Finished recordings exported to `icloud_dir` (from `~/.config/earshot/config.json`) as scene `mac`, for `mac/earshot.py` | `EarshotExport.swift`, `docs/CONTRACT.md` |
 
 Everything else (live subtitles, notes, records window, on-device recognition) is Cicada's.
@@ -25,11 +28,11 @@ scripts/test.sh                  # unit tests
 swiftc -O tools/lsctl.swift -o build/lsctl   # remote control of a dev build; commands in tools/README.md
 ```
 
-Dev build log: `/tmp/earshot-mac-dev-debug.log`. Per-app capture can be tried without a meeting app:
+Debug commands added: `tencentMute:<on|off>` (as if the mic icon was clicked), `tencentTap` (open the click watch now). Dev build log: `/tmp/earshot-mac-dev-debug.log`. Per-app capture can be tried without a meeting app:
 `defaults write dev.earshot.mac.dev captureApps -array /usr/bin/afplay`, relaunch, `afplay Resources/sample/sample.m4a`.
 `EARSHOT_ICLOUD_DIR=<folder>` (via `open --env`) sends exports somewhere other than the configured folder.
 
 ## Known limits
 
 - After stopping by itself, the first 1–2 seconds of the next call or playback can be missed (checked every 2 s).
-- Your microphone is recorded for the whole call, also while you are muted in the meeting app.
+- 腾讯会议 mute is followed through clicks on its mic icon only: its keyboard shortcut or the host muting you is not seen. Other apps' mute isn't followed.

@@ -23,6 +23,8 @@ final class AppModel: ObservableObject {
     /// 电脑和会议室: the microphone side, its own engine (language, pauses, model), as Feishu keeps the
     /// online and the room streams apart instead of mixing them into one track.
     lazy var roomListen = ListenEngine(settings: settings, role: .room)
+    /// Earshot: 腾讯会议's mic button, so a muted stretch of a call isn't recorded.
+    let tencentMute = TencentMute()
     /// Debug (`roomEcho:on`, `roomGate:off`): the room through the echo-cancelling unit, or without
     /// the gate, to try each defence alone. Next meeting. The unit is off by default: it let no echo
     /// through, but lost most of what people at the table said (`EchoGate`).
@@ -380,6 +382,8 @@ final class AppModel: ObservableObject {
         }
         endTimer = watch
         RunLoop.main.add(watch, forMode: .common)
+        tencentMute.onChange = { [weak self] in self?.applyMuteGate() }
+        tencentMute.start()
     }
 
     /// The room's microphone unplugged: Core Audio moves the engine to the system default without a
@@ -424,6 +428,12 @@ final class AppModel: ObservableObject {
     }
 
     func launch() async {
+        // Earshot replaces Audio Hijack, which ran from login: on by default, once (the user's
+        // later choice in Settings stands). Not for a dev build.
+        if !DevBuild.isDev, !UserDefaults.standard.bool(forKey: "loginItemDefaulted") {
+            UserDefaults.standard.set(true, forKey: "loginItemDefaulted")
+            loginItem.set(true)
+        }
         await listen.refreshInstalledLocales()
         refresh()
         // Listening starts by itself at launch: never with the microphone open. 会议室 is chosen
@@ -1269,6 +1279,14 @@ final class AppModel: ObservableObject {
     /// app playing starts a new recording, as Audio Hijack did. A stop the user asked for clears it.
     private var rearmed = false
 
+    /// Muted in 腾讯会议: the microphone track goes on as silence, at once (no restart, no lost words
+    /// when unmuting). Only the call side's microphone; a mic turned on for the room isn't touched.
+    private func applyMuteGate() {
+        let gate = tencentMute.muted
+        debugLog("tencent mute: microphone \(gate ? "silenced" : "recorded")")
+        roomListen.router.setSilenced(gate)
+    }
+
     private func followCallMic(inCall: Bool) {
         if inCall, !settings.hearsRoom, !callMic {
             debugLog("call mic: a call started, recording the microphone too")
@@ -1937,6 +1955,8 @@ final class AppModel: ObservableObject {
             // endTimes:<silence>,<countdown>,<grace> in seconds; endTimes: back to the settings.
             let v = arg.split(separator: ",").compactMap { Double($0) }
             endTimesOverride = v.count == 3 ? (v[0], v[1], v[2]) : nil
+        case "tencentMute": tencentMute.simulate(muted: arg == "on")
+        case "tencentTap": tencentMute.probeTap()
         case "endKeep": keepRecording()
         case "endState":
             debugLog("meeting end: running=\(listen.isRunning) autoEnded=\(autoEnded) pending=\(ending.map { "\($0.reason) in \(Int($0.deadline.timeIntervalSinceNow)) s" } ?? "none") inCall=\(endWatch?.inCall.values.sorted() ?? []) silent=\(endWatch.map { Int(Date().timeIntervalSince($0.lastSpeech)) } ?? -1) s config=\(endConfig)")
