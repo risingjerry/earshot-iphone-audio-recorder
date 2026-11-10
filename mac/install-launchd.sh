@@ -49,6 +49,9 @@ job = {
     "StandardOutPath": log,
     "StandardErrorPath": log,
 }
+agent_run = Path(os.environ.get("AGENT_RUN", "~/.local/bin/agent-run")).expanduser()
+if agent_run.is_file() and os.access(agent_run, os.X_OK):
+    job["ProgramArguments"].insert(0, str(agent_run))
 with open(destination, "wb") as handle:
     plistlib.dump(job, handle)
 PY

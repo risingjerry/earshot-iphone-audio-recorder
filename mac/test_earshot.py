@@ -4,6 +4,8 @@ from datetime import datetime, timedelta, timezone
 import io
 import json
 import os
+import plistlib
+import sys
 import types
 import shutil
 from pathlib import Path
@@ -875,6 +877,39 @@ class EarshotTests(unittest.TestCase):
         output = self.console.getvalue()
         for value in (RID, "项目复盘", self.entry()["outputDir"], "done"):
             self.assertIn(value, output)
+
+
+class InstallTests(unittest.TestCase):
+    def test_optional_agent_run_preserves_the_rest_of_the_job(self):
+        installer = Path(__file__).with_name("install-launchd.sh")
+        # Run only the plist-writing Python heredoc, never the launchctl shell commands.
+        source = installer.read_text().rsplit("<<'PY'\n", 1)[1].split("\nPY\n", 1)[0]
+        with tempfile.TemporaryDirectory() as tmp, patch.dict(os.environ, {"HOME": tmp, "PATH": "/usr/bin:/bin"}, clear=True):
+            home = Path(tmp)
+            destination = home / "sync.plist"
+            config = {"icloud_dir": str(home / "cloud"), "config_path": str(home / "config.json")}
+
+            def render():
+                with patch.object(sys, "argv", [str(installer), str(installer.parent.parent), sys.executable,
+                                                str(destination), json.dumps(config)]):
+                    exec(compile(source, str(installer), "exec"), {"__name__": "__main__"})
+                return plistlib.loads(destination.read_bytes())
+
+            original = render()
+            self.assertEqual(original["ProgramArguments"], [sys.executable, str(installer.with_name("earshot.py")), "sync"])
+            for name, override in ((".local/bin/agent-run", None), ("custom & <runner>", "~/custom & <runner>")):
+                launcher = home / name
+                launcher.parent.mkdir(parents=True, exist_ok=True)
+                if override:
+                    os.environ["AGENT_RUN"] = override
+                for mode in (None, 0o644, 0o755):
+                    with self.subTest(name=name, mode=mode):
+                        if mode is not None:
+                            launcher.write_text("#!/bin/sh\nexit 0\n")
+                            launcher.chmod(mode)
+                        expected = dict(original, ProgramArguments=([str(launcher)] if mode == 0o755 else [])
+                                        + original["ProgramArguments"])
+                        self.assertEqual(render(), expected)
 
 
 if __name__ == "__main__":
