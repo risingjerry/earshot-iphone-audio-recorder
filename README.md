@@ -92,6 +92,10 @@ python3 mac/earshot.py sync          # process finished recordings once
 make mac-install                     # launchd job: every 10 minutes and whenever the iCloud folder changes
 ```
 
+If `~/.local/bin/agent-run` (or the path set by `AGENT_RUN`) is executable, `make mac-install` prepends it to the job command.
+This optional stable launcher keeps macOS privacy permissions tied to it rather than an upgrading Python; grant it the required access.
+Without an executable launcher, the command is unchanged.
+
 | Setting | Meaning | Default |
 |---|---|---|
 | `transcribe_cmd` | **Required.** Command list with `{audio}` and `{out_dir}`; must write one `.md` transcript (a `.srt` is optional). Local example: [`examples/transcribe-whisper.sh`](examples/transcribe-whisper.sh) | — |

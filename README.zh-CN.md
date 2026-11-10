@@ -85,6 +85,10 @@ python3 mac/earshot.py sync          # 处理一次已经录完的录音
 make mac-install                     # launchd 任务：每 10 分钟一次，iCloud 文件夹有变化时立即处理
 ```
 
+若 `~/.local/bin/agent-run`（或 `AGENT_RUN` 指定的路径）可执行，`make mac-install` 会将它放在任务命令最前面。
+这个可选的稳定启动器让 macOS 隐私权限绑定到它，而不随 Python 升级改变；请给启动器授予所需权限。
+没有可执行的启动器时，命令保持原样。
+
 | 配置 | 含义 | 默认 |
 |---|---|---|
 | `transcribe_cmd` | **必填。** 命令数组，占位符 `{audio}`、`{out_dir}`；要在 out_dir 写出一个 `.md` 文字稿（`.srt` 可选）。本地示例：[`examples/transcribe-whisper.sh`](examples/transcribe-whisper.sh) | — |
